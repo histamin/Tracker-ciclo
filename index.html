@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracker Ciclo & Intestino</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c2607a;
+    --rose-light: #f0d4dc;
+    --rose-pale: #fdf5f7;
+    --teal: #3d7a72;
+    --teal-light: #cde8e4;
+    --teal-pale: #f0faf9;
+    --amber: #c47c2b;
+    --amber-light: #f5e0c0;
+    --purple: #6b5b8f;
+    --purple-light: #ddd5ef;
+    --ink: #2a2030;
+    --ink-mid: #5a5060;
+    --ink-light: #9a909a;
+    --cream: #faf8f5;
+    --white: #ffffff;
+    --border: #ede8ea;
+    --shadow: 0 2px 16px rgba(42,32,48,0.08);
+    --shadow-lg: 0 8px 32px rgba(42,32,48,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #2a2030 0%, #3d2a3a 50%, #2a3040 100%);
+    padding: 24px 20px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(194,96,122,0.15);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(61,122,114,0.12);
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .phase-badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV TABS */
+  .nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex: 1;
+    min-width: 70px;
+    padding: 14px 8px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-light);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn.active {
+    color: var(--rose);
+    border-bottom-color: var(--rose);
+  }
+
+  /* MAIN */
+  .main { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+  /* PHASE BANNER */
+  .phase-banner {
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+  .phase-banner h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .phase-banner ul {
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .phase-banner ul li::before { content: '• '; }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    margin-bottom: 14px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* SYMPTOM SCALE */
+  .symptom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+  .symptom-row:last-child { border-bottom: none; }
+  .symptom-name {
+    font-size: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+  .scale-btns {
+    display: flex;
+    gap: 4px;
+  }
+  .scale-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--ink-light);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .scale-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .scale-btn.sel-1 { background: #e8f5e9; border-color: #66bb6a; color: #2e7d32; }
+  .scale-btn.sel-2 { background: #f9fbe7; border-color: #d4e157; color: #827717; }
+  .scale-btn.sel-3 { background: #fff8e1; border-color: #ffca28; color: #f57f17; }
+  .scale-btn.sel-4 { background: #fbe9e7; border-color: #ff7043; color: #bf360c; }
+  .scale-btn.sel-5 { background: #fce4ec; border-color: #e91e63; color: #880e4f; }
+
+  /* CHECKLIST */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .check-box.checked { background: var(--teal); border-color: var(--teal); }
+  .check-box.checked::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+  .check-label { font-size: 14px; flex: 1; }
+  .check-dose { font-size: 12px; color: var(--ink-light); }
+  .prog-note { font-size: 11px; color: var(--purple); font-weight: 500; }
+
+  /* TEXT INPUTS */
+  .field-group { margin-bottom: 14px; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--ink-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  textarea, input[type=text], input[type=number] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--cream);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  textarea:focus, input:focus { border-color: var(--rose); background: white; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--rose); color: white; }
+  .btn-primary:hover { background: #a84e66; }
+  .btn-teal { background: var(--teal); color: white; }
+  .btn-teal:hover { background: #2d6059; }
+  .btn-outline { background: transparent; color: var(--ink-mid); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--rose); color: var(--rose); }
+  .btn-amber { background: var(--amber); color: white; }
+  .btn-amber:hover { background: #a36020; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+  /* CALENDAR */
+  .calendar { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-header { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 6px; }
+  .cal-dow { text-align: center; font-size: 10px; font-weight: 600; color: var(--ink-light); text-transform: uppercase; }
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: default;
+    color: var(--ink-mid);
+  }
+  .cal-day.today { background: var(--rose-light); color: var(--rose); font-weight: 700; }
+  .cal-day.has-data { background: var(--teal-light); color: var(--teal); font-weight: 600; cursor: pointer; }
+  .cal-day.cycle-day { position: relative; }
+  .cal-day.cycle-day::after {
+    content: attr(data-cd);
+    position: absolute;
+    bottom: 0px;
+    right: 1px;
+    font-size: 7px;
+    color: var(--rose);
+    font-weight: 700;
+  }
+  .cal-day.empty { opacity: 0; pointer-events: none; }
+
+  /* HISTORY */
+  .history-entry {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .history-date { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+  .history-symptoms { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .sym-chip {
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* CHARTS */
+  .chart-wrap { margin-bottom: 20px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--ink-mid); margin-bottom: 10px; }
+  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-label { font-size: 12px; width: 120px; flex-shrink: 0; color: var(--ink-mid); }
+  .bar-track { flex: 1; height: 10px; background: var(--border); border-radius: 100px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 100px; transition: width 0.5s; }
+  .bar-val { font-size: 12px; font-weight: 600; color: var(--ink-mid); width: 30px; text-align: right; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    transition: transform 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .hidden { display: none; }
+
+  .cycle-info {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .ci-box {
+    flex: 1;
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .ci-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--rose); }
+  .ci-label { font-size: 11px; color: var(--ink-light); margin-top: 2px; }
+
+  .menstrual-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--rose), var(--purple));
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: opacity 0.2s;
+  }
+  .menstrual-btn:hover { opacity: 0.9; }
+
+  input[type=file] { display: none; }
+
+  /* BOWEL MOVEMENT */
+  .bm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .bm-btn {
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    color: var(--ink-mid);
+    line-height: 1.3;
+  }
+  .bm-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .bm-btn.selected { background: var(--teal-light); border-color: var(--teal); color: var(--teal); font-weight: 600; }
+  .bm-count-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bm-count-btn { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border); background: transparent; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--ink-mid); transition: all 0.15s; }
+  .bm-count-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .bm-count-val { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--teal); min-width: 24px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🌿 Tracker Ciclo & Intestino</div>
+  <div class="header-sub" id="hdrDate"></div>
+  <div class="phase-badge" id="hdrPhase"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('hoje')">📋 Hoje</button>
+  <button class="nav-btn" onclick="showTab('calendario')">📅 Calendário</button>
+  <button class="nav-btn" onclick="showTab('historico')">📖 Histórico</button>
+  <button class="nav-btn" onclick="showTab('insights')">📊 Insights</button>
+  <button class="nav-btn" onclick="showTab('config')">⚙️ Config</button>
+</div>
+
+<div class="main">
+
+  <!-- TAB: HOJE -->
+  <div id="tab-hoje">
+
+    <div class="cycle-info">
+      <div class="ci-box">
+        <div class="ci-num" id="cycleDay">—</div>
+        <div class="ci-label">Dia do ciclo</div>
+      </div>
+      <div class="ci-box">
+        <div class="ci-num" id="cyclePhaseShort" style="font-size:18px;padding-top:4px">—</div>
+        <div class="ci-label">Fase atual</div>
+      </div>
+    </div>
+
+    <button class="menstrual-btn" onclick="registerMenstruation()">🌸 Registrar nova menstruação</button>
+
+    <div class="phase-banner" id="phaseBanner"></div>
+
+    <!-- SINTOMAS -->
+    <div class="card">
+      <div class="card-title">🩺 Sintomas de hoje</div>
+      <div id="symptomRows"></div>
+    </div>
+
+    <!-- SUPLEMENTOS -->
+    <div class="card">
+      <div class="card-title">💊 Suplementação</div>
+      <div id="suppRows"></div>
+    </div>
+
+    <!-- EVACUAÇÃO -->
+    <div class="card">
+      <div class="card-title">🚽 Evacuação do dia</div>
+      <div class="field-group">
+        <div class="field-label">Quantidade de vezes</div>
+        <div class="bm-count-row">
+          <button class="bm-count-btn" onclick="changeBMCount(-1)">−</button>
+          <span class="bm-count-val" id="bmCount">0</span>
+          <button class="bm-count-btn" onclick="changeBMCount(1)">+</button>
+          <span style="font-size:13px;color:var(--ink-light)">vez(es) hoje</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Consistência (Escala de Bristol)</div>
+        <div class="bm-grid" id="bmTypeGrid">
+          <button class="bm-btn" data-bm="1" onclick="selectBMType(1)">Tipo 1<br><span style="font-size:11px;opacity:0.7">Bolinhas duras</span></button>
+          <button class="bm-btn" data-bm="2" onclick="selectBMType(2)">Tipo 2<br><span style="font-size:11px;opacity:0.7">Em grumos</span></button>
+          <button class="bm-btn" data-bm="3" onclick="selectBMType(3)">Tipo 3<br><span style="font-size:11px;opacity:0.7">Com rachaduras</span></button>
+          <button class="bm-btn" data-bm="4" onclick="selectBMType(4)">Tipo 4 ✅<br><span style="font-size:11px;opacity:0.7">Ideal — suave</span></button>
+          <button class="bm-btn" data-bm="5" onclick="selectBMType(5)">Tipo 5<br><span style="font-size:11px;opacity:0.7">Pedaços moles</span></button>
+          <button class="bm-btn" data-bm="6" onclick="selectBMType(6)">Tipo 6<br><span style="font-size:11px;opacity:0.7">Pastoso</span></button>
+          <button class="bm-btn" data-bm="7" onclick="selectBMType(7)" style="grid-column: span 2">Tipo 7<br><span style="font-size:11px;opacity:0.7">Líquido / diarreia</span></button>
+        </div>
+        <div style="font-size:11px;color:var(--ink-light);margin-top:4px">Tipos 1–2 = constipação · Tipo 4 = ideal · Tipos 6–7 = muito mole</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Observações (esforço, dor, sangue, muco...)</div>
+        <input type="text" id="fBMNota" placeholder="Ex: esforço intenso, dor, normal...">
+      </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="card">
+      <div class="card-title">📝 Registro do dia</div>
+
+      <div class="field-group">
+        <div class="field-label">Alimentação</div>
+        <textarea id="fAlimentacao" rows="2" placeholder="O que você comeu hoje?"></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Transgresão ao glúten?</div>
+        <input type="text" id="fGluten" placeholder="Sim / Não / Suspeita — detalhes...">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Gatilhos suspeitos</div>
+        <input type="text" id="fGatilhos" placeholder="Alimentos, situações, estresse...">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Hidratação (copos de água)</div>
+        <input type="number" id="fAgua" min="0" max="20" placeholder="Ex: 6">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Notas livres</div>
+        <textarea id="fNotas" rows="3" placeholder="Observações, sentimentos, contexto..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveToday()">💾 Salvar dia</button>
+        <button class="btn btn-outline" onclick="loadToday()">↩ Recarregar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: CALENDÁRIO -->
+  <div id="tab-calendario" class="hidden">
+    <div class="card">
+      <div class="card-title">📅 <span id="calMonthLabel"></span></div>
+      <div class="cal-header">
+        <div class="cal-dow">Dom</div><div class="cal-dow">Seg</div>
+        <div class="cal-dow">Ter</div><div class="cal-dow">Qua</div>
+        <div class="cal-dow">Qui</div><div class="cal-dow">Sex</div>
+        <div class="cal-dow">Sáb</div>
+      </div>
+      <div class="calendar" id="calGrid"></div>
+      <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-mid)">
+        <span>🟢 Dado registrado</span>
+        <span style="color:var(--rose)">⬤ Hoje</span>
+        <span>D# = dia do ciclo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: HISTÓRICO -->
+  <div id="tab-historico" class="hidden">
+    <div class="card">
+      <div class="card-title">📖 Histórico de registros</div>
+      <div id="historyList"><div style="color:var(--ink-light);font-size:14px">Nenhum registro ainda.</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: INSIGHTS -->
+  <div id="tab-insights" class="hidden">
+    <div class="card">
+      <div class="card-title">📊 Médias por sintoma</div>
+      <div id="insightCharts"><div style="color:var(--ink-light);font-size:14px">Registre pelo menos 3 dias para ver insights.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Média por fase do ciclo</div>
+      <div id="phaseCharts"><div style="color:var(--ink-light);font-size:14px">Dados insuficientes.</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: CONFIG -->
+  <div id="tab-config" class="hidden">
+    <div class="card">
+      <div class="card-title">⚙️ Configurações do ciclo</div>
+      <div class="field-group">
+        <div class="field-label">D1 do ciclo atual</div>
+        <input type="text" id="cfgD1" placeholder="AAAA-MM-DD">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-teal" onclick="saveConfig()">✅ Salvar configuração</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 Backup de dados</div>
+      <div class="btn-row">
+        <button class="btn btn-amber" onclick="exportBackup()">💾 Exportar .json</button>
+        <label class="btn btn-outline" style="cursor:pointer">
+          📂 Importar backup
+          <input type="file" id="importFile" accept=".json" onchange="importBackup(event)">
+        </label>
+      </div>
+      <p style="font-size:12px;color:var(--ink-light);margin-top:12px;">⚠️ Exporte após cada sessão — os dados ficam no navegador e podem ser perdidos ao limpar cache.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🗑️ Zona de perigo</div>
+      <button class="btn btn-outline" style="border-color:#e53935;color:#e53935" onclick="clearAll()">🗑️ Apagar todos os dados</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+
+const SYMPTOMS = [
+  { id: 'distensao', label: 'Distensão abdominal' },
+  { id: 'espasmos', label: 'Espasmos musculares' },
+  { id: 'constipacao', label: 'Constipação' },
+  { id: 'articulacoes', label: 'Dores articulares' },
+  { id: 'fadiga', label: 'Fadiga' },
+  { id: 'humor', label: 'Humor / Irritabilidade' },
+  { id: 'sono', label: 'Sono perturbado' },
+  { id: 'ansiedade', label: 'Ansiedade' },
+  { id: 'cefaleia', label: 'Dor de cabeça / Enxaqueca' },
+  { id: 'sensacaoFace', label: 'Sensação na face' },
+];
+
+const SUPPS = [
+  { id: 'loratadina', label: 'Loratadina 10mg', dose: '1x/dia' },
+  { id: 'akkermansia', label: 'Akkermansia 500 Ultra', dose: '1x/dia' },
+  { id: 'quercetin', label: 'Quercetin Phytosome', dose: '2x/dia com refeições' },
+  { id: 'curcumin', label: 'Curcumin Phytosome', dose: '2x/dia' },
+  { id: 'glutamina', label: 'L-Glutamina 3g', dose: 'Em jejum' },
+  { id: 'vitD', label: 'Vitamin D Supreme', dose: '1x/dia' },
+  { id: 'omega3', label: 'Omega-3', dose: 'Almoço + jantar' },
+  { id: 'magnesio', label: 'Magnésio Glicinato', dose: '1x/dia à noite' },
+  { id: 'coq10', label: 'CoQ10', dose: '1x/dia' },
+  { id: 'creatina', label: 'Creatina 3g', dose: '1x/dia' },
+  { id: 'progesterona', label: 'Progesterona 100mg', dose: 'D14–D24', cycleOnly: [14,24] },
+];
+
+// Phase definitions
+const PHASES = [
+  {
+    name: 'Menstrual', days: [1,5], emoji: '🌑',
+    color: '#c2607a', bg: '#fdf0f3', border: '#c2607a',
+    avoid: ['Histamina alta (fermentados, embutidos, álcool)', 'Carnes processadas', 'Laticínios'],
+    supp: ['L-Glutamina em jejum', 'Omega-3 anti-inflamatório', 'Magnésio à noite'],
+    lifestyle: ['Repouso ativo', 'Caminhada leve', 'Calor local para espasmos'],
+    alert: 'Fase de renovação — respeite o repouso. Histamina eleva com estresse.',
+  },
+  {
+    name: 'Folicular', days: [6,13], emoji: '🌒',
+    color: '#3d7a72', bg: '#f0faf9', border: '#3d7a72',
+    avoid: ['Fermentados em excesso', 'Álcool', 'Glúten — qualquer transgresão'],
+    supp: ['Akkermansia — janela de ouro', 'Quercetin 2x', 'Vitamina D'],
+    lifestyle: ['Exercício moderado liberado', 'Sono regular', 'Hidratação aumentada'],
+    alert: '✨ Janela de ouro — melhor período para reconstrução da mucosa intestinal.',
+  },
+  {
+    name: 'Ovulatória', days: [13,15], emoji: '🌕',
+    color: '#c47c2b', bg: '#fdf8f0', border: '#c47c2b',
+    avoid: ['Alimentos de alta histamina', 'Estresse intenso'],
+    supp: ['Iniciar Progesterona no D14', 'Quercetin essencial nesta fase'],
+    lifestyle: ['Monitorar energia e humor', 'Transição delicada'],
+    alert: '⚠️ Pico estrogênico — histamina pode elevar. Iniciar Progesterona no D14.',
+  },
+  {
+    name: 'Lútea', days: [15,21], emoji: '🌖',
+    color: '#6b5b8f', bg: '#f7f5fb', border: '#6b5b8f',
+    avoid: ['Álcool', 'Fermentados', 'Açúcar refinado', 'Glúten'],
+    supp: ['Progesterona 100mg D14-D24', 'Magnésio extra se espasmos', 'Curcumin anti-inflamatório'],
+    lifestyle: ['Reduzir exercício intenso', 'Priorizar sono', 'Mindfulness'],
+    alert: 'Estrogênio relativo alto → eleva histamina → inibe DAO. Atenção redobrada.',
+  },
+  {
+    name: 'Pré-menstrual', days: [22,28], emoji: '🌘',
+    color: '#c2607a', bg: '#fdf0f3', border: '#c2607a',
+    avoid: ['TODO alimento de alta histamina', 'Álcool absolutamente', 'Fermentados', 'Glúten', 'Embutidos'],
+    supp: ['Loratadina essencial', 'Quercetin máximo', 'Magnésio à noite'],
+    lifestyle: ['Contenção máxima na dieta', 'Evitar estresse', 'Sono 8h'],
+    alert: '🚨 PROTOCOLO DE ALERTA — Fase mais crítica. Máxima atenção à histamina.',
+  },
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  d1: '2026-03-15',
+  entries: {},
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('trackerState');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem('trackerState', JSON.stringify(state));
+}
+
+// ══════════════════════════════════════════
+// CYCLE LOGIC
+// ══════════════════════════════════════════
+function getCycleDay(dateStr) {
+  const d1 = new Date(state.d1 + 'T00:00:00');
+  const d = new Date(dateStr + 'T00:00:00');
+  const diff = Math.floor((d - d1) / 86400000) + 1;
+  if (diff < 1) return null;
+  // wrap at 28
+  return ((diff - 1) % 28) + 1;
+}
+
+function getPhase(cd) {
+  if (!cd) return null;
+  return PHASES.find(p => cd >= p.days[0] && cd <= p.days[1]) || PHASES[4];
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+
+// ══════════════════════════════════════════
+// RENDER HEADER
+// ══════════════════════════════════════════
+function renderHeader() {
+  const today = todayStr();
+  const cd = getCycleDay(today);
+  const phase = cd ? getPhase(cd) : null;
+
+  document.getElementById('hdrDate').textContent = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('cycleDay').textContent = cd || '?';
+  document.getElementById('cyclePhaseShort').textContent = phase ? phase.emoji + ' ' + phase.name : '—';
+
+  const badge = document.getElementById('hdrPhase');
+  if (phase) {
+    badge.textContent = phase.emoji + ' ' + phase.name;
+    badge.style.background = phase.color + '33';
+    badge.style.color = '#fff';
+  }
+
+  // Phase banner
+  if (phase) {
+    const banner = document.getElementById('phaseBanner');
+    banner.style.background = phase.bg;
+    banner.style.borderColor = phase.color;
+    banner.innerHTML = `
+      <h3 style="color:${phase.color}">${phase.emoji} ${phase.name} — D${cd}</h3>
+      <ul>
+        <li><strong>⚠️ Alerta:</strong> ${phase.alert}</li>
+        <li><strong>🚫 Evitar:</strong> ${phase.avoid.join(', ')}</li>
+        <li><strong>💊 Destaque:</strong> ${phase.supp.join(', ')}</li>
+        <li><strong>🌿 Estilo de vida:</strong> ${phase.lifestyle.join(', ')}</li>
+      </ul>`;
+  }
+}
+
+// ══════════════════════════════════════════
+// RENDER SYMPTOMS
+// ══════════════════════════════════════════
+function renderSymptoms() {
+  const today = todayStr();
+  const entry = state.entries[today] || {};
+  const syms = entry.symptoms || {};
+
+  const container = document.getElementById('symptomRows');
+  container.innerHTML = '';
+
+  SYMPTOMS.forEach(sym => {
+    const val = syms[sym.id] || 0;
+    const row = document.createElement('div');
+    row.className = 'symptom-row';
+    row.innerHTML = `<span class="symptom-name">${sym.label}</span><div class="scale-btns" id="scale-${sym.id}"></div>`;
+    container.appendChild(row);
+
+    const scaleCont = row.querySelector(`#scale-${sym.id}`);
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'scale-btn' + (val === i ? ` sel-${i}` : '');
+      btn.textContent = i;
+      btn.onclick = () => { setSymptom(sym.id, i); };
+      scaleCont.appendChild(btn);
+    }
+  });
+}
+
+function setSymptom(id, val) {
+  const today = todayStr();
+  if (!state.entries[today]) state.entries[today] = {};
+  if (!state.entries[today].symptoms) state.entries[today].symptoms = {};
+  const cur = state.entries[today].symptoms[id] || 0;
+  state.entries[today].symptoms[id] = cur === val ? 0 : val;
+  saveState();
+  renderSymptoms();
+}
+
+// ══════════════════════════════════════════
+// RENDER SUPPS
+// ══════════════════════════════════════════
+function renderSupps() {
+  const today = todayStr();
+  const cd = getCycleDay(today);
+  const entry = state.entries[today] || {};
+  const suppCheck = entry.supps || {};
+
+  const container = document.getElementById('suppRows');
+  container.innerHTML = '';
+
+  SUPPS.forEach(s => {
+    // If cycleOnly, check if current cycle day is in range
+    if (s.cycleOnly) {
+      if (!cd || cd < s.cycleOnly[0] || cd > s.cycleOnly[1]) return;
+    }
+
+    const checked = suppCheck[s.id] || false;
+    const div = document.createElement('div');
+    div.className = 'check-item';
+    div.innerHTML = `
+      <div class="check-box ${checked ? 'checked' : ''}" id="chkbox-${s.id}"></div>
+      <div>
+        <div class="check-label">${s.label}</div>
+        <div class="check-dose">${s.dose}${s.cycleOnly ? ' <span class="prog-note">— D'+s.cycleOnly[0]+'–D'+s.cycleOnly[1]+' ✨</span>' : ''}</div>
+      </div>`;
+    div.onclick = () => toggleSupp(s.id);
+    container.appendChild(div);
+  });
+}
+
+function toggleSupp(id) {
+  const today = todayStr();
+  if (!state.entries[today]) state.entries[today] = {};
+  if (!state.entries[today].supps) state.entries[today].supps = {};
+  state.entries[today].supps[id] = !state.entries[today].supps[id];
+  saveState();
+  renderSupps();
+}
+
+// ══════════════════════════════════════════
+// SAVE / LOAD TODAY
+// ══════════════════════════════════════════
+function saveToday() {
+  const today = todayStr();
+  if (!state.entries[today]) state.entries[today] = {};
+  state.entries[today].alimentacao = document.getElementById('fAlimentacao').value;
+  state.entries[today].gluten = document.getElementById('fGluten').value;
+  state.entries[today].gatilhos = document.getElementById('fGatilhos').value;
+  state.entries[today].agua = document.getElementById('fAgua').value;
+  state.entries[today].notas = document.getElementById('fNotas').value;
+  state.entries[today].bmCount = parseInt(document.getElementById('bmCount').textContent) || 0;
+  state.entries[today].bmType = state._bmType || null;
+  state.entries[today].bmNota = document.getElementById('fBMNota').value;
+  state.entries[today].cycleDay = getCycleDay(today);
+  saveState();
+  showToast('✅ Dia salvo com sucesso!');
+  renderCalendar();
+}
+
+function loadToday() {
+  const today = todayStr();
+  const e = state.entries[today] || {};
+  document.getElementById('fAlimentacao').value = e.alimentacao || '';
+  document.getElementById('fGluten').value = e.gluten || '';
+  document.getElementById('fGatilhos').value = e.gatilhos || '';
+  document.getElementById('fAgua').value = e.agua || '';
+  document.getElementById('fNotas').value = e.notas || '';
+  document.getElementById('bmCount').textContent = e.bmCount || 0;
+  document.getElementById('fBMNota').value = e.bmNota || '';
+  state._bmType = e.bmType || null;
+  document.querySelectorAll('.bm-btn').forEach(b => b.classList.remove('selected'));
+  if (e.bmType) {
+    const btn = document.querySelector(`.bm-btn[data-bm="${e.bmType}"]`);
+    if (btn) btn.classList.add('selected');
+  }
+}
+
+// ══════════════════════════════════════════
+// MENSTRUATION
+// ══════════════════════════════════════════
+function registerMenstruation() {
+  const today = todayStr();
+  if (confirm(`Registrar hoje (${today}) como D1 do novo ciclo?`)) {
+    state.d1 = today;
+    saveState();
+    renderHeader();
+    renderSymptoms();
+    renderSupps();
+    showToast('🌸 Novo ciclo registrado! D1 = ' + today);
+  }
+}
+
+// ══════════════════════════════════════════
+// CALENDAR
+// ══════════════════════════════════════════
+function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  document.getElementById('calMonthLabel').textContent =
+    now.toLocaleDateString('pt-BR', {month:'long', year:'numeric'});
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = todayStr();
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    el.textContent = '.';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cd = getCycleDay(dateStr);
+    const hasData = !!state.entries[dateStr];
+    const isToday = dateStr === today;
+
+    const el = document.createElement('div');
+    el.className = 'cal-day' + (isToday ? ' today' : '') + (hasData ? ' has-data' : '') + (cd ? ' cycle-day' : '');
+    el.textContent = d;
+    if (cd) {
+      el.setAttribute('data-cd', cd);
+      el.title = `D${cd} — ${getPhase(cd)?.name || ''}`;
+    }
+    if (hasData) el.onclick = () => viewDay(dateStr);
+    grid.appendChild(el);
+  }
+}
+
+function viewDay(dateStr) {
+  showTab('historico');
+  renderHistory(dateStr);
+}
+
+// ══════════════════════════════════════════
+// HISTORY
+// ══════════════════════════════════════════
+function renderHistory(highlight) {
+  const container = document.getElementById('historyList');
+  const entries = Object.entries(state.entries)
+    .filter(([,e]) => e && (e.symptoms || e.alimentacao || e.notas))
+    .sort((a,b) => b[0].localeCompare(a[0]));
+
+  if (!entries.length) {
+    container.innerHTML = '<div style="color:var(--ink-light);font-size:14px">Nenhum registro ainda.</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  entries.forEach(([dateStr, e]) => {
+    const cd = getCycleDay(dateStr);
+    const phase = cd ? getPhase(cd) : null;
+    const isHighlight = dateStr === highlight;
+    const div = document.createElement('div');
+    div.className = 'history-entry';
+    if (isHighlight) div.style.border = '2px solid var(--rose)';
+
+    const dateLabel = new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'short', day:'numeric', month:'short'});
+    let sympHTML = '';
+    if (e.symptoms) {
+      const syms = Object.entries(e.symptoms).filter(([,v]) => v > 0);
+      syms.forEach(([id, val]) => {
+        const sym = SYMPTOMS.find(s => s.id === id);
+        const colors = ['','#e8f5e9','#f9fbe7','#fff8e1','#fbe9e7','#fce4ec'];
+        const textColors = ['','#2e7d32','#827717','#f57f17','#bf360c','#880e4f'];
+        sympHTML += `<span class="sym-chip" style="background:${colors[val]};color:${textColors[val]}">${sym?.label || id}: ${val}</span>`;
+      });
+    }
+
+    div.innerHTML = `
+      <div class="history-date">
+        ${dateLabel} ${cd ? `<span style="color:var(--rose);font-size:12px">D${cd}</span>` : ''}
+        ${phase ? `<span style="color:${phase.color};font-size:12px;margin-left:4px">${phase.emoji} ${phase.name}</span>` : ''}
+      </div>
+      ${sympHTML ? `<div class="history-symptoms">${sympHTML}</div>` : ''}
+      ${e.alimentacao ? `<div style="font-size:13px;color:var(--ink-mid)">🍽️ ${e.alimentacao}</div>` : ''}
+      ${e.gatilhos ? `<div style="font-size:13px;color:var(--amber)">⚡ Gatilhos: ${e.gatilhos}</div>` : ''}
+      ${e.gluten ? `<div style="font-size:13px;color:var(--rose)">🌾 Glúten: ${e.gluten}</div>` : ''}
+      ${e.agua ? `<div style="font-size:13px;color:var(--teal)">💧 ${e.agua} copos</div>` : ''}
+      ${e.bmCount > 0 ? `<div style="font-size:13px;color:var(--ink-mid)">🚽 ${e.bmCount}x — Tipo ${e.bmType || '?'}${e.bmNota ? ' · '+e.bmNota : ''}</div>` : ''}
+      ${e.notas ? `<div style="font-size:13px;margin-top:6px;color:var(--ink-mid);font-style:italic">${e.notas}</div>` : ''}`;
+    container.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════
+// INSIGHTS
+// ══════════════════════════════════════════
+function renderInsights() {
+  const entries = Object.values(state.entries).filter(e => e && e.symptoms);
+  const chartDiv = document.getElementById('insightCharts');
+  const phaseDiv = document.getElementById('phaseCharts');
+
+  if (entries.length < 3) {
+    chartDiv.innerHTML = '<div style="color:var(--ink-light);font-size:14px">Registre pelo menos 3 dias para ver insights.</div>';
+    phaseDiv.innerHTML = '<div style="color:var(--ink-light);font-size:14px">Dados insuficientes.</div>';
+    return;
+  }
+
+  // By symptom
+  const symAvgs = SYMPTOMS.map(sym => {
+    const vals = entries.map(e => (e.symptoms && e.symptoms[sym.id]) || 0).filter(v => v > 0);
+    const avg = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+    return { label: sym.label, avg: avg.toFixed(1) };
+  }).sort((a,b) => b.avg - a.avg);
+
+  chartDiv.innerHTML = '<div class="bar-chart">';
+  symAvgs.forEach(s => {
+    const pct = (s.avg / 5) * 100;
+    const color = s.avg >= 4 ? '#e53935' : s.avg >= 3 ? '#fb8c00' : s.avg >= 2 ? '#fdd835' : '#66bb6a';
+    chartDiv.innerHTML += `
+      <div class="bar-row">
+        <span class="bar-label">${s.label.length > 18 ? s.label.slice(0,18)+'…' : s.label}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="bar-val">${s.avg > 0 ? s.avg : '—'}</span>
+      </div>`;
+  });
+  chartDiv.innerHTML += '</div>';
+
+  // By phase
+  const phaseData = {};
+  PHASES.forEach(p => { phaseData[p.name] = { total: 0, count: 0 }; });
+
+  Object.entries(state.entries).forEach(([dateStr, e]) => {
+    if (!e || !e.symptoms) return;
+    const cd = getCycleDay(dateStr);
+    if (!cd) return;
+    const phase = getPhase(cd);
+    if (!phase) return;
+    const vals = Object.values(e.symptoms).filter(v => v > 0);
+    if (!vals.length) return;
+    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+    phaseData[phase.name].total += avg;
+    phaseData[phase.name].count++;
+  });
+
+  phaseDiv.innerHTML = '<div class="bar-chart">';
+  PHASES.forEach(p => {
+    const d = phaseData[p.name];
+    const avg = d.count ? (d.total / d.count).toFixed(1) : 0;
+    const pct = (avg / 5) * 100;
+    phaseDiv.innerHTML += `
+      <div class="bar-row">
+        <span class="bar-label">${p.emoji} ${p.name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${p.color}"></div></div>
+        <span class="bar-val">${avg > 0 ? avg : '—'}</span>
+      </div>`;
+  });
+  phaseDiv.innerHTML += '</div>';
+}
+
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+function saveConfig() {
+  const val = document.getElementById('cfgD1').value;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(val)) { showToast('⚠️ Formato: AAAA-MM-DD'); return; }
+  state.d1 = val;
+  saveState();
+  renderHeader();
+  renderSymptoms();
+  renderSupps();
+  renderCalendar();
+  showToast('✅ D1 atualizado: ' + val);
+}
+
+// ══════════════════════════════════════════
+// BACKUP
+// ══════════════════════════════════════════
+function exportBackup() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `tracker-backup-${todayStr()}.json`;
+  a.click();
+  showToast('💾 Backup exportado!');
+}
+
+function importBackup(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (imported.entries) {
+        Object.assign(state.entries, imported.entries);
+        if (imported.d1) state.d1 = imported.d1;
+        saveState();
+        init();
+        showToast('📂 Backup importado!');
+      }
+    } catch { showToast('⚠️ Arquivo inválido'); }
+  };
+  reader.readAsText(file);
+}
+
+function clearAll() {
+  if (confirm('⚠️ Apagar TODOS os dados? Isso não pode ser desfeito.')) {
+    state = { d1: '2026-03-15', entries: {} };
+    saveState();
+    init();
+    showToast('🗑️ Dados apagados.');
+  }
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function showTab(tab) {
+  ['hoje','calendario','historico','insights','config'].forEach(t => {
+    document.getElementById('tab-'+t).classList.add('hidden');
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn')[['hoje','calendario','historico','insights','config'].indexOf(tab)].classList.add('active');
+
+  if (tab === 'calendario') renderCalendar();
+  if (tab === 'historico') renderHistory();
+  if (tab === 'insights') renderInsights();
+  if (tab === 'config') document.getElementById('cfgD1').value = state.d1;
+}
+
+function changeBMCount(delta) {
+  const el = document.getElementById('bmCount');
+  const cur = parseInt(el.textContent) || 0;
+  el.textContent = Math.max(0, cur + delta);
+}
+
+function selectBMType(type) {
+  state._bmType = type;
+  document.querySelectorAll('.bm-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.bm-btn[data-bm="${type}"]`).classList.add('selected');
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  loadState();
+  renderHeader();
+  renderSymptoms();
+  renderSupps();
+  loadToday();
+}
+
+init();
+</script>
+</body>
+</html>
